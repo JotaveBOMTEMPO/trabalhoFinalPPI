@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="form.css">
+    <title>Cadastro</title>
+</head>
+<body>
+    <div id="registration-box">
+        <form action="/form.html" method="POST">
+            <h3>CADASTRO</h3>
+            <label class="label" for="full-name">Nome:</label>
+            <input type="text" id="full-name" name="full-name" placeholder="Insira o nome" required><br>
+            <label class="label" for="birth-date">Data de Nascimento:</label>
+            <input type="text" id="birth-date" name="birth-date" placeholder="Insira a data de nascimento" required><br>
+            <label class="label" for="username">Usuário:</label>
+            <input type="text" id="username" name="username" placeholder="Insira o nome de usuário" required><br>
+            <label class="label" for="password">Senha:</label>
+            <input type="password" id="password" name="password" placeholder="Insira a senha" required><br>
+            <button id="register-btn" type="submit">Cadastrar</button>
+        </form>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

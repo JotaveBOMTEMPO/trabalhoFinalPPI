@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="chatStyle.css">
+    <title>Webchat Online</title>
+</head>
+
+<body>
+    <h1>Webchat Online</h1>
+
+    <form id="chat-form">
+        <label for="user">Usuário:</label>
+        <select id="userSelect" name="userSelect" required>
+            <option value="usuario1">Usuário 1</option>
+            <option value="usuario2">Usuário 2</option>
+        </select>
+
+        <label for="message">Mensagem:</label>
+        <textarea id="messageInput" name="messageInput" placeholder="Digite sua mensagem" required></textarea>
+        <button type="button" onclick="sendMessage()">Enviar Mensagem</button>
+    </form>
+    <div id="chat-box">
+        <div id="chat-messages-container">
+            <div class="message">
+                <strong>Usuário 1:</strong> Olá, como você está hoje?
+                <span class="timestamp">[data e hora]</span>
+            </div>
+            <div class="message">
+                <strong>Usuário 2:</strong> Estou bem, muito obrigado por perguntar!
+                <span class="timestamp">[data e hora]</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-container">
+        <a href="/"><button class="btn-voltar">Voltar ao Menu</button></a>
+    </div>
+
+    <script>
+        window.onload = function () {
+            loadUsers();
+            loadMessages();
+        };
+
+        function loadUsers() {
+            fetch('/get-usuarios')
+                .then(response => response.json())
+                .then(data => {
+                    const userSelect = document.getElementById('userSelect');
+                    userSelect.innerHTML = "";
+
+                    data.usuarios.forEach(user => {
+                        const newOption = document.createElement('option');
+                        newOption.value = user.usuario;
+                        newOption.text = user.nome;
+                        userSelect.add(newOption);
+                    });
+                })
+                .catch(error => console.error('Erro ao obter usuários:', error));
+        }
+
+        function loadMessages() {
+            fetch('/get-mensagens')
+                .then(response => response.json())
+                .then(data => {
+                    const chatContainer = document.getElementById('chat-messages-container');
+                    chatContainer.innerHTML = '';
+
+                    data.forEach(msg => {
+                        const DIVmsg = document.createElement('div');
+                        DIVmsg.className = 'message';
+                        DIVmsg.innerHTML = `<strong>${msg.usuario}:</strong> ${msg.mensagem}<span class="timestamp">${msg.timestamp}</span>`;
+                        chatContainer.appendChild(DIVmsg);
+                    });
+                })
+                .catch(error => console.error('Erro ao obter mensagens:', error));
+        }
+
+        function sendMessage() {
+            const user = document.getElementById('userSelect').value;
+            const message = document.getElementById('messageInput').value;
+
+            if (user && message) {
+                fetch('/enviar-mensagem', {
+                    method: 'POST',
+                    body: new URLSearchParams({ user, message }),
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            document.getElementById('messageInput').value = '';
+                            loadMessages();
+                        } else {
+                            alert('Erro ao enviar mensagem: ' + result.error);
+                        }
+                    })
+                    .catch(error => console.error('Erro na requisição:', error));
+            } else {
+                alert('Usuário e mensagem são obrigatórios.');
+            }
+        }
+    </script>
+    <script src="index.js"></script>
+</body>
+
+</html>
